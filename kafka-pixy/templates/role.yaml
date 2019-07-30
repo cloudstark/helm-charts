@@ -1,0 +1,18 @@
+{{- if .Values.rbac.create }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: location-enricher
+rules:
+  - apiGroups:
+    - "" # "" indicates the core API group
+    resources:
+    - "services"
+    - "pods"
+    - "configmaps"
+    - "endpoints"
+    verbs:
+    - "get"
+    - "watch"
+    - "list"
+{{- end }}

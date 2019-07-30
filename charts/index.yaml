@@ -1,12 +1,25 @@
 apiVersion: v1
 entries:
+  kafka-pixy:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2019-07-30T14:58:21.889521+02:00"
+    description: A gRPC & REST proxy for Kafka
+    digest: 90b2e9d78d3ff98f58abbe7059a8568ad539aa8fe04e7f9e99f83b175cb7d2fd
+    maintainers:
+    - email: lars.martin@cloudstark.solutions
+      name: Lars Martin
+    name: kafka-pixy
+    urls:
+    - kafka-pixy-0.1.0.tgz
+    version: 0.1.0
   postgrest:
   - apiVersion: v1
     appVersion: 5.2.0
-    created: "2019-07-30T14:23:38.248925+02:00"
+    created: "2019-07-30T14:58:21.891853+02:00"
     description: Webserver that turns any PostgreSQL database directly into a RESTful
       API.
-    digest: 3f6f6deb31f6728fc1f9166fb81cf6772c01ed8bd33ccb0c066d99b078f37aab
+    digest: bbb8a18cb63965c1f56256472be2ec341c4687bceecb17465313ced421d99ca0
     maintainers:
     - email: lars.martin@cloudstark.solutions
       name: Lars Martin
@@ -14,4 +27,4 @@ entries:
     urls:
     - postgrest-0.2.0.tgz
     version: 0.2.0
-generated: "2019-07-30T14:23:38.247567+02:00"
+generated: "2019-07-30T14:58:21.888713+02:00"
