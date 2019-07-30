@@ -1,0 +1,8 @@
+apiVersion: v1
+appVersion: "5.2.0"
+description: Webserver that turns any PostgreSQL database directly into a RESTful API.
+name: postgrest
+version: 0.2.0
+maintainers:
+  - name: Lars Martin
+    email: lars.martin@cloudstark.solutions

@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "postgrest.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "postgrest.name" . }}
+    helm.sh/chart: {{ include "postgrest.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "postgrest.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "postgrest.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: PGRST_DB_URI
+            {{- if .Values.postgrest.db_uri }}
+              value: {{ .Values.postgrest.db_uri }}
+            {{- else }}
+              value: {{ include "postgrest.postgresql.uri" . }}
+            {{- end }}
+            - name: PGRST_SERVER_PORT
+              value: {{ .Values.service.port | quote }}
+            - name: PGRST_DB_SCHEMA
+            {{- if .Values.postgrest.db_schema }}
+              value: {{ .Values.postgrest.db_schema | quote }}
+            {{- else if .Values.postgresql.postgresDatabase }}
+              value: {{ .Values.postgresql.postgresDatabase | quote }}
+            {{- end }}
+            - name: PGRST_DB_ANON_ROLE
+            {{- if .Values.postgrest.db_anon_role }}
+              value: {{ .Values.postgrest.db_anon_role | quote }}
+            {{- else if .Values.postgresql.postgresUser }}
+              value: {{ .Values.postgrest.db_anon_role | quote }}
+            {{- end }}
+            {{- if .Values.postgrest.db_pool }}
+            - name: PGRST_DB_POOL
+              value: {{ .Values.postgrest.db_pool | quote }}
+            {{- end }}
+            {{- if .Values.postgrest.server_host }}
+            - name: PGRST_SERVER_HOST
+              value: {{ .Values.postgrest.server_host | quote }}
+            {{- end }}
+            {{- if .Values.postgrest.server_proxy_uri }}
+            - name: PGRST_SERVER_PROXY_URI
+              value: {{ .Values.postgrest.server_proxy_uri | quote }}
+            {{- end }}
+            {{- if .Values.postgrest.jwt_secret }}
+            - name: PGRST_JWT_SECRET
+              value: {{ .Values.postgrest.jwt_secret | quote }}
+            {{- end }}
+            {{- if .Values.postgrest.secret_is_base64 }}
+            - name: PGRST_SECRET_IS_BASE64
+              value: {{ .Values.postgrest.secret_is_base64 | quote }}
+            {{- end }}
+            {{- if .Values.postgrest.jwt_aud }}
+            - name: PGRST_JWT_AUD
+              value: {{ .Values.postgrest.jwt_aud | quote }}
+            {{- end }}
+            {{- if .Values.postgrest.max_rows }}
+            - name: PGRST_MAX_ROWS
+              value: {{ .Values.postgrest.max_rows | quote }}
+            {{- end }}
+            {{- if .Values.postgrest.pre_request }}
+            - name: PGRST_PRE_REQUEST
+              value: {{ .Values.postgrest.pre_request | quote }}
+            {{- end }}
+            {{- if .Values.postgrest.role_claim_key }}
+            - name: PGRST_ROLE_CLAIM_KEY
+              value: {{ .Values.postgrest.role_claim_key | quote }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
